@@ -102,10 +102,13 @@ void WeightUpdater::ProcessFile(std::string inputfile){
   // - Check Global
   if(!fOutputGlobalTree){
 
-    TTree *t_input_global = (TTree *)f_input->Get(fGlobalTreeName.c_str());
     caf::SRGlobal* srglobal = nullptr;
-    t_input_global->SetBranchAddress(fSRGlobalName.c_str(), &srglobal);
-    t_input_global->GetEntry(0);
+
+    TTree *t_input_global = (TTree *)f_input->Get(fGlobalTreeName.c_str());
+    if(t_input_global){
+      t_input_global->SetBranchAddress(fSRGlobalName.c_str(), &srglobal);
+      t_input_global->GetEntry(0);
+    }
 
     CreateGlobalTree(srglobal);
 
@@ -147,11 +150,31 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
       auto& nu = srproxy->mc.nu[i_nu];
       size_t genieIdx = nu.genie_evtrec_idx;
-      fInputGENIETree->GetEntry(genieIdx);
+      // 1) Direct access
+      //fInputGENIETree->GetEntry(genieIdx);
+      // 2) Use GetEntryWithIndex
+      std::uint32_t this_tunc_hash = srproxy->hdr.sourceNameHash;
+      Long64_t GENIEEntryFromIndex = fInputGENIETree->GetEntryNumberWithIndex(this_tunc_hash, genieIdx);
+      fInputGENIETree->GetEntry(GENIEEntryFromIndex);
+
+      printf("[WeightUpdater::ProcessFile]     - (Truncated hash, GENIE Tree position) = (%u, %u) -> GetEntryNumberWithIndex = %ld\n", this_tunc_hash, genieIdx, GENIEEntryFromIndex);
+
+      // Get genie event record
       genie::EventRecord const &GenieGHep = *fInputGENIENtp->event;
-      
+
+      // CAF-to-GENIE matching validation
+      genie::GHepParticle *ISLep = GenieGHep.Probe();
+      TLorentzVector ISLepP4 = *ISLep->P4();
+      double enu_from_genie = ISLepP4.E();
+      if( std::fabs(nu.E.GetValue() - enu_from_genie) > 1E-5 ){
+        printf("[WeightUpdater::ProcessFile]     - ENu from CAF and GENIE are not close; matching problem\n");
+        printf("[WeightUpdater::ProcessFile]       ENu (CAF, GENIE) = (%f, %f), diff = %f > 1E-5\n", nu.E.GetValue(), enu_from_genie, std::fabs(nu.E.GetValue() - enu_from_genie));
+        abort();
+      }
+
       if(DoDebug){
         printf("[WeightUpdater::ProcessFile]     - ENu (Proxy) = %f\n", nu.E.GetValue());
+        printf("[WeightUpdater::ProcessFile]     - ENu from GENIE = %f\n", enu_from_genie);
         printf("[WeightUpdater::ProcessFile]     - Running responses..\n");
       }
 
@@ -260,18 +283,20 @@ void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
   caf::SRGlobal srglobal = caf::SRGlobal();
   fOutputGlobalTree->Branch(fSRGlobalName.c_str(), &srglobal);
 
-  // Copying from input SRGlobal
-  printf("[WeightUpdater::CreateGlobalTree] @@ Copying input SRGlobal\n");
-  printf("[WeightUpdater::CreateGlobalTree] - Number of Parameter sets = %d\n", input_srglobal->wgts.size());
-  for(unsigned int i = 0; i < input_srglobal->wgts.size(); ++i){
-    const caf::SRWeightPSet& pset = input_srglobal->wgts[i];
-    std::cout << "  " << i << ": " << pset.name << ", type " << pset.type << ", " << pset.nuniv << " universes, adjusted parameters:" << std::endl;
-    for(const caf::SRWeightMapEntry& entry: pset.map){
-      std::cout << "    " << entry.param.name << std::endl;
+  if(input_srglobal){
+    // Copying from input SRGlobal
+    printf("[WeightUpdater::CreateGlobalTree] @@ Copying input SRGlobal\n");
+    printf("[WeightUpdater::CreateGlobalTree] - Number of Parameter sets = %d\n", input_srglobal->wgts.size());
+    for(unsigned int i = 0; i < input_srglobal->wgts.size(); ++i){
+      const caf::SRWeightPSet& pset = input_srglobal->wgts[i];
+      std::cout << "  " << i << ": " << pset.name << ", type " << pset.type << ", " << pset.nuniv << " universes, adjusted parameters:" << std::endl;
+      for(const caf::SRWeightMapEntry& entry: pset.map){
+        std::cout << "    " << entry.param.name << std::endl;
+      }
+
+      srglobal.wgts.push_back( pset );
+
     }
-
-    srglobal.wgts.push_back( pset );
-
   }
 
   // Now adding new weights
@@ -374,7 +399,7 @@ bool WeightUpdater::AddPOTHist(TH1D *h_input){
     return true;
   }
 
-  std::cout << h_input->GetBinContent(1) << std::endl;
+  std::cout << "[WeightUpdater::AddPOTHist] POT = " << h_input->GetBinContent(1) << std::endl;
 
   fOutputPOT->Add(h_input);
   return true;
