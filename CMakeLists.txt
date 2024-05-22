@@ -27,6 +27,12 @@ if(NOT TARGET GENIE3::All)
   message(FATAL_ERROR "Expected find_package(GENIE3 REQUIRED) call to set up target GENIE3::All.")
 endif()
 
+## Check if we have fhiclcpp from ups
+find_package(fhiclcpp QUIET)
+if(NOT fhiclcpp_FOUND)
+  find_package(fhiclcppstandalone)
+endif()
+
 ###### Compiler set up
 add_library(sbnnusyst_dependencies INTERFACE)
 target_link_libraries(sbnnusyst_dependencies INTERFACE fhiclcpp::fhiclcpp)
