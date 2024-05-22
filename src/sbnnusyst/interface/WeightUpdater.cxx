@@ -203,6 +203,11 @@ void WeightUpdater::ProcessFile(std::string inputfile){
         fSR->mc.nu[i_nu].wgt.emplace_back();
         for(const auto& w: ws){
           fSR->mc.nu[i_nu].wgt.back().univ.push_back(w);
+
+          if(DoDebug){
+            printf("[WeightUpdater::ProcessFile]       - w =  = %f\n", w);
+          }
+
         }
 
       } // END resp loop
@@ -330,13 +335,15 @@ void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
       }
     }
     if(matched_idx_sp<0){
-      printf("[WeightUpdater::CreateGlobalTree] IGENIESystProvider_tool not found fro pid = %d\n", int(pid));
+      printf("[WeightUpdater::CreateGlobalTree] IGENIESystProvider_tool not found from pid = %d\n", int(pid));
       abort();
     }
 
     // Name
     srglobal.wgts.back().name = fRH->GetSystProvider()[matched_idx_sp]->GetFullyQualifiedName()+"_"+sph.prettyName;
     srglobal.wgts.back().nuniv = sph.isCorrection ? 1 : sph.paramVariations.size();
+
+    printf("[WeightUpdater::CreateGlobalTree] Adding %s to globalTree\n", srglobal.wgts.back().name.c_str());
 
     // TODO
     srglobal.wgts.back().type = caf::kMultiSim;
