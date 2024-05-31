@@ -1,6 +1,6 @@
 # sbnnusyst
 
-This package enables user to update caf::SRTrueInteraction::wgt to include new cross-section reweights evaluated by [nusystematics](https://github.com/NuSystematics/nusystematics).
+This package provides tools to produce a new flattened CAF file with updated caf::SRTrueInteraction::wgt including new cross-section reweights evaluated by [nusystematics](https://github.com/NuSystematics/nusystematics).
 
 # dependencies
 
