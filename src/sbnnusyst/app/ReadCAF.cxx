@@ -118,6 +118,10 @@ int main(int argc, char const *argv[]) {
     fInputCAFTree->GetEntry(cafev_it);
 
     printf("- %ld-th event\n", cafev_it);
+    std::cout << "  * sourceName = " << srproxy->hdr.sourceName.GetValue() << std::endl;
+    std::cout << "  * sourceNameHash = " << srproxy->hdr.sourceNameHash << std::endl;
+    //printf("  * sourceName = %s\n",sourceName.c_str());
+    //printf("  * sourceNameHash = %zd\n",sourceNameHash);
     printf("  * Neutrino loop *\n");
     int i_nu = 0;
     for(auto& nu: srproxy->mc.nu){
@@ -126,12 +130,14 @@ int main(int argc, char const *argv[]) {
       for(auto& wgt: nu.wgt){
         printf("    - %d-th PSet (%s)\n", i_w, srglobal->wgts[i_w].name.c_str());
         for(int i_univ=0; i_univ<wgt.univ.size(); i_univ++){
-          //std::cout << "      - univ: " << i_univ << ", weight = " << wgt.univ[i_univ] << std::endl;
+          std::cout << "      - univ: " << i_univ << ", weight = " << wgt.univ[i_univ] << std::endl;
         }
         i_w++;
       }
       i_nu++;
     }
+
+/*
     printf("  * Slice loop *\n");
     int i_slc=0;
     for(auto& slc: srproxy->slc){
@@ -154,6 +160,7 @@ int main(int argc, char const *argv[]) {
       }
       i_slc++;
     }
+*/
 
 
   }
