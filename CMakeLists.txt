@@ -46,6 +46,8 @@ install(TARGETS sbnnusyst_dependencies EXPORT sbnnusyst-targets)
 
 add_subdirectory(src/sbnnusyst)
 
+add_subdirectory(fcls)
+
 install(EXPORT sbnnusyst-targets
         NAMESPACE sbnnusyst::
         DESTINATION lib/cmake/sbnnusyst)
