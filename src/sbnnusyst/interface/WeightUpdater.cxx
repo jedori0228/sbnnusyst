@@ -48,7 +48,7 @@ void WeightUpdater::SetResponseHelper(std::string fclname){
 
 void WeightUpdater::ProcessFile(std::string inputfile){
 
-  TFile *f_input = new TFile(inputfile.c_str());
+  TFile *f_input = TFile::Open(inputfile.c_str());
 
   // Check POT and Livetime first;
   TH1D *hInputPOT = (TH1D *)f_input->Get(fPOTHistName.c_str());
