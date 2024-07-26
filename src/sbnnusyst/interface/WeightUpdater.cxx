@@ -21,6 +21,7 @@ WeightUpdater::WeightUpdater(
   fRH = nullptr;
 
   NProcessedCAFEvents = 0;
+  NMaxCAFEventsToProcess = 0;
   GlobalGENIEEventCounter = 0;
   NProcessedFiles = 0;
 
@@ -44,6 +45,10 @@ WeightUpdater::~WeightUpdater(){
 
 void WeightUpdater::SetResponseHelper(std::string fclname){
   fRH = new nusyst::response_helper(fclname);
+}
+
+void WeightUpdater::SetNMaxCAFEventsToProcess(size_t nmax){
+  NMaxCAFEventsToProcess = nmax;
 }
 
 void WeightUpdater::ProcessFile(std::string inputfile){
@@ -128,6 +133,14 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
     if(DoDebug){
       printf("[WeightUpdater::ProcessFile] * CAF entry = %ld\n", cafev_it);
+    }
+    // Check if NMaxCAFEventsToProcess is set
+    if( NMaxCAFEventsToProcess>0 ){
+      // if set, check if we have reached the maximum
+      if(NProcessedCAFEvents>=NMaxCAFEventsToProcess ){
+        printf("[WeightUpdater::ProcessFile] * Reached the maximum events to process, N_MAX = %ld\n", NMaxCAFEventsToProcess);
+        break;
+      }
     }
 
     fInputCAFTree->GetEntry(cafev_it);
@@ -254,6 +267,8 @@ void WeightUpdater::ProcessFile(std::string inputfile){
     fOutputFlatSR->Clear();
     fOutputFlatSR->Fill(*fSR);
     fOutputCAFTree->Fill();
+
+    NProcessedCAFEvents++;
 
   } // END caf event loop
 

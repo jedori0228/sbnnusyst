@@ -128,6 +128,7 @@ int main(int argc, char const *argv[]) {
     "GenieEvtRecTree", "GenieEvtRec"
   ); 
   wu.SetOutputFileName(cliopts::output_filename);
+  wu.SetNMaxCAFEventsToProcess(cliopts::NMax);
   wu.SetResponseHelper(cliopts::fclname);
   wu.SetOutputPOTHistName("TotalPOT");
   wu.SetOutputLivetimeHistName("TotalEvents");

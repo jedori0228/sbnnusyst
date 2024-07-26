@@ -47,6 +47,8 @@ public:
   std::string fGENIETreeName;
   std::string fGENIERecName;
   size_t NProcessedCAFEvents;
+  size_t NMaxCAFEventsToProcess;
+  void SetNMaxCAFEventsToProcess(size_t nmax);
   size_t GlobalGENIEEventCounter;
   void ProcessFile(std::string inputfile);
   size_t NProcessedFiles;
