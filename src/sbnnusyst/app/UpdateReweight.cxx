@@ -54,14 +54,13 @@ namespace cliopts {
 
 void SayUsage(char const *argv[]) {
   std::cout << "[USAGE]: " << argv[0] << "\n" << std::endl;
-  std::cout << "\t-?|--help        : Show this message.\n"
-               "\t-c <config.fcl>  : fhicl file to read.\n"
-               "\t-k <list key>    : fhicl key to look for parameter headers,\n"
-               "\t                   "
+  std::cout << "\t-?|--help          : Show this message.\n"
+               "\t-c <config.fcl>    : fhicl file to read.\n"
+               "\t-k <list key>      : fhicl key to look for parameter headers,\n"
+               "\t                     "
                "\"generated_systematic_provider_configuration\"\n"
-               "\t                   by default.\n"
-               "\t-i <ghep.root>   : GENIE TChain descriptor to read events\n"
-               "\t                   from. (n.b. quote wildcards).\n"
+               "\t                     by default.\n"
+               "\t-i <inputlist.txt> : List of input CAF files\n"
                "\t-N <NMax>        : Maximum number of events to process.\n"
                "\t-s <NSkip>       : Number of events to skip.\n"
                "\t-o <out.root>    : File to write validation canvases to.\n"
