@@ -207,8 +207,17 @@ void WeightUpdater::ProcessFile(std::string inputfile){
         const systtools::paramId_t& pid = v.pid;
         const double& CVw = v.CV_response;
         const std::vector<double>& ws = v.responses;
+
+        systtools::SystParamHeader const &sph = fRH->GetHeader( pid );
         if(DoDebug){
-          printf("[WeightUpdater::ProcessFile]     - ParamID = %ld\n", pid);
+          printf("[WeightUpdater::ProcessFile]     - Param name = %s\n", sph.prettyName.c_str());
+          printf("[WeightUpdater::ProcessFile]       - ParamID = %ld\n", pid);
+        }
+        if(sph.isResponselessParam){
+          if(DoDebug){
+            printf("[WeightUpdater::ProcessFile]       - Responsless parameter, so skipping\n");
+          }
+          continue;
         }
 
         // Upated fSR (caf::StandardRecord*),
@@ -339,6 +348,13 @@ void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
 
   for(systtools::paramId_t pid : fRH->GetParameters()) {
     systtools::SystParamHeader const &sph = fRH->GetHeader(pid);
+
+    if(sph.isResponselessParam){
+      if(DoDebug) {
+        printf("[WeightUpdater::CreateGlobalTree] Responsless dial found: %s, thus skipping\n", sph.prettyName.c_str());
+      }
+      continue;
+    }
 
     srglobal.wgts.emplace_back();
 
