@@ -61,6 +61,7 @@ public:
   genie::NtpMCEventRecord *fOutputGENIENtp;
 
   void SetOutputFileName(std::string FileName);
+  void CreateMetadataTree(); // TODO
   void CreateGlobalTree(caf::SRGlobal* input_srglobal);
 
   void SetOutputPOTHistName(std::string name);

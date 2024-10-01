@@ -298,6 +298,29 @@ void WeightUpdater::SetOutputFileName(std::string FileName){
   fOutputGENIETree = new TTree(fGENIETreeName.c_str(), fGENIETreeName.c_str());
   fOutputGENIETree->Branch(fGENIERecName.c_str(), &fOutputGENIENtp);
 
+  CreateMetadataTree();
+
+}
+
+// TODO
+void WeightUpdater::CreateMetadataTree(){
+
+  fOutputFile->cd();
+  fOutputFile->mkdir("metadata");
+  fOutputFile->cd("metadata");
+
+  TTree *fMetadataTree = new TTree("metatree", "metatree");
+
+  std::string fMetadata_key;
+  std::string fMetadata_value;
+
+  fMetadataTree->Branch("key", &fMetadata_key);
+  fMetadataTree->Branch("value", &fMetadata_value);
+
+  fMetadataTree->Write();
+
+  fOutputFile->cd();
+
 }
 
 void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
