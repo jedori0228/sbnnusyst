@@ -1,5 +1,8 @@
 #include "WeightUpdater.h"
 #include "TROOT.h"
+#include "TVector3.h"
+#include "TMath.h"
+#include "TRandom3.h"
 
 namespace sbnnusyst{
 
@@ -36,6 +39,7 @@ WeightUpdater::WeightUpdater(
   fOutputLivetime = nullptr;
 
   DoDebug = false;
+  DoTrackSplit = false;
 
 }
 
@@ -258,17 +262,26 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
     for(size_t i_slc=0; i_slc<N_SLC; i_slc++){
 
+      const auto& slcproxy = srproxy->slc[i_slc];
+
       if(DoDebug){
         printf("[WeightUpdater::ProcessFile]   - i_slc = %ld\n", i_slc);
       }
 
-      int this_slc_truth_index = srproxy->slc[i_slc].truth.index;
+      int this_slc_truth_index = slcproxy.truth.index;
       if(DoDebug){
         printf("[WeightUpdater::ProcessFile]     - truth index = %d\n", this_slc_truth_index);
       }
 
       if(this_slc_truth_index>=0){
         fSR->slc[i_slc].truth = fSR->mc.nu[this_slc_truth_index];
+      }
+
+      if(DoTrackSplit){
+        bool IsClearCosmic = slcproxy.is_clear_cosmic;
+        if(!IsClearCosmic){
+          fTrackSplit->ApplyTrackSplit(fSR->slc[i_slc]);
+        }
       }
 
     }
@@ -473,6 +486,12 @@ void WeightUpdater::Save(){
 
   printf("[WeightUpdater::Save] Done\n");
 
+}
+
+void WeightUpdater::InitTrackSplit(std::string tracksplit_filename, std::string chi2_filename){
+  fTrackSplit = new TrackSplit();
+  fTrackSplit->Init(tracksplit_filename, chi2_filename);
+  fTrackSplit->DoDebug = DoDebug;
 }
 
 } // END namespace sbnnusyst

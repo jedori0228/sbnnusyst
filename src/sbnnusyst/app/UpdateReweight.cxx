@@ -50,6 +50,8 @@ namespace cliopts {
   size_t NMax = std::numeric_limits<size_t>::max();
   size_t NSkip = 0;
   bool DoDebug = false;
+  std::string tracksplit_filename = "";
+  std::string chi2_filename = "";
 } // namespace cliopts
 
 void SayUsage(char const *argv[]) {
@@ -61,10 +63,12 @@ void SayUsage(char const *argv[]) {
                "\"generated_systematic_provider_configuration\"\n"
                "\t                     by default.\n"
                "\t-i <inputlist.txt> : List of input CAF files\n"
-               "\t-N <NMax>        : Maximum number of events to process.\n"
-               "\t-s <NSkip>       : Number of events to skip.\n"
-               "\t-o <out.root>    : File to write validation canvases to.\n"
-               "\t--debug          : Run debugging mode.\n"
+               "\t-N <NMax>          : Maximum number of events to process.\n"
+               "\t-s <NSkip>         : Number of events to skip.\n"
+               "\t-o <out.root>      : File to write validation canvases to.\n"
+               "\t--debug            : Run debugging mode.\n"
+               "\t-tracksplit        : Apply track split using the map\n"
+               "\t-chi2              : tempalte for chi2pid calculation\n"
             << std::endl;
 }
 
@@ -90,6 +94,10 @@ void HandleOpts(int argc, char const *argv[]) {
     } else if (std::string(argv[opt]) == "--debug") {
       cliopts::DoDebug = true;
       ++opt;
+    } else if (std::string(argv[opt]) == "-tracksplit") {
+      cliopts::tracksplit_filename = argv[++opt];
+    } else if (std::string(argv[opt]) == "-chi2") {
+      cliopts::chi2_filename = argv[++opt];
     } else {
       std::cout << "[ERROR]: Unknown option: " << argv[opt] << std::endl;
       SayUsage(argv);
@@ -132,7 +140,12 @@ int main(int argc, char const *argv[]) {
   wu.SetResponseHelper(cliopts::fclname);
   wu.SetOutputPOTHistName("TotalPOT");
   wu.SetOutputLivetimeHistName("TotalEvents");
-  if(cliopts::DoDebug) wu.DoDebug = true;
+  wu.DoDebug = cliopts::DoDebug;
+
+  if(cliopts::tracksplit_filename != ""){
+    wu.DoTrackSplit = true;
+    wu.InitTrackSplit(cliopts::tracksplit_filename, cliopts::chi2_filename);
+  }
 
   // Loop over input files
   while (std::getline(inputFile, filePath)) {

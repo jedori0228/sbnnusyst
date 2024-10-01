@@ -5,6 +5,7 @@
 // ROOT
 #include "TChain.h"
 #include "TBranch.h"
+#include "TH2.h"
 // GENIE
 #include "Framework/EventGen/EventRecord.h"
 #include "Framework/GHEP/GHepParticle.h"
@@ -20,6 +21,7 @@
 #include "nusystematics/utility/response_helper.hh"
 // sbnnusyst
 #include "sbnnusyst/utility/Utilities.h"
+#include "sbnnusyst/interface/TrackSplit.h"
 
 namespace sbnnusyst{
 
@@ -75,6 +77,12 @@ public:
   void Save();
 
   bool DoDebug;
+
+  // DEV
+
+  bool DoTrackSplit;
+  TrackSplit *fTrackSplit;
+  void InitTrackSplit(std::string tracksplit_filename, std::string chi2_filename);
 
 };
 

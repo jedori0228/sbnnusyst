@@ -1,8 +1,10 @@
 SET(IFCE_IMPLFILES
+  TrackSplit.cxx
   WeightUpdater.cxx
 )
 
 SET(IFCE_HDRFILES
+  TrackSplit.h
   WeightUpdater.h
 )
 
