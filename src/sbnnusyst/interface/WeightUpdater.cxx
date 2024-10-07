@@ -32,6 +32,8 @@ WeightUpdater::WeightUpdater(
   fOutputFlatSR = nullptr;
   fOutputGENIENtp = nullptr;
 
+  NExpectedWeights = 0;
+
   fOutputPOT = nullptr;
   fOutputLivetime = nullptr;
 
@@ -193,6 +195,10 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
       // Evaluate reweights
       systtools::event_unit_response_w_cv_t resp = fRH->GetEventVariationAndCVResponse(GenieGHep);
+      if(resp.size() != NExpectedWeights){
+        printf("[WeightUpdater::ProcessFile] resp.size() = %ld but NExpectedWeights = %ld\n", resp.size(), NExpectedWeights);
+        abort();
+      }
 
       if(DoDebug){
         printf("[WeightUpdater::ProcessFile]     - => done.\n");
@@ -380,6 +386,7 @@ void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
     }
 
     srglobal.wgts.emplace_back();
+    NExpectedWeights++;
 
     // Find the IGENIESystProvider_tool(ISystProviderTool) for this pid
     int matched_idx_sp = -1;
@@ -432,6 +439,7 @@ void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
     }
 
   }
+
   fOutputGlobalTree->Fill();
 
 }

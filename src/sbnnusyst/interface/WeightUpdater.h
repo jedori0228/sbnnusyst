@@ -63,6 +63,7 @@ public:
   void SetOutputFileName(std::string FileName);
   void CreateMetadataTree(); // TODO
   void CreateGlobalTree(caf::SRGlobal* input_srglobal);
+  unsigned int NExpectedWeights;
 
   void SetOutputPOTHistName(std::string name);
   void SetOutputLivetimeHistName(std::string name);
