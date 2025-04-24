@@ -407,7 +407,7 @@ void WeightUpdater::CreateGlobalTree(caf::SRGlobal* input_srglobal){
     printf("[WeightUpdater::CreateGlobalTree] Adding %s to globalTree\n", srglobal.wgts.back().name.c_str());
 
     // TODO
-    srglobal.wgts.back().type = caf::kMultiSim;
+    srglobal.wgts.back().type = sph.isRandomlyThrown ? caf::kMultiSim : caf::kMultiSigma;
 
     // Weight map entry (e.g., dep dials)
     auto it = map_resp_to_respless.find( sph.systParamId );
