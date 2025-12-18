@@ -118,8 +118,15 @@ void TrackSplit::ApplyTrackSplit(caf::SRSlice& slc){
         }
         pToSplit = 0;
       }
-      else pToSplit = (isWest ? splitProb[1][0]->GetBinContent(xBin,yBin) :
+      else{
+/*
+        // Using histogram
+        pToSplit = (isWest ? splitProb[1][0]->GetBinContent(xBin,yBin) :
                        splitProb[0][0]->GetBinContent(xBin,yBin) );
+*/
+        // Using fixed number from BNB
+        pToSplit = (isWest ? 0.02 : 0.06);
+      }
     } // END if crossesCath
     else {
       bool isWest = pfp.trk.start.x > 0;
@@ -144,8 +151,16 @@ void TrackSplit::ApplyTrackSplit(caf::SRSlice& slc){
         }
         pToSplit = 0;
       }
-      else pToSplit = (isWest ? splitProb[1][1]->GetBinContent(xBin,yBin) :
+      else{
+/*
+        // Using histogram
+        pToSplit = (isWest ? splitProb[1][1]->GetBinContent(xBin,yBin) :
                                 splitProb[0][1]->GetBinContent(xBin,yBin) );
+*/
+        // Using fixed number from BNB
+        pToSplit = 0.19;
+
+      }
     } // END if NOT crossesCath
 
     if ( DoDebug ){
@@ -162,6 +177,9 @@ void TrackSplit::ApplyTrackSplit(caf::SRSlice& slc){
                          10000 * abs(pfp.trk.end.z);
     TRandom3 tRand(seed);
     double sigma = 1.0;
+
+    // JSKIMDEBUG TODO
+    //sigma = 0.4;
 
     if ( tRand.Rndm() > pToSplit*sigma ) {
       if( DoDebug ){
