@@ -1,0 +1,8 @@
+ResIso_Tool_Config: {
+  tool_type: "ResIso"
+  instance_name: "SBNNuSyst_ResonanceIsolation_multisigma"
+
+  alldial_variation_descriptor: "[-1,+1,-2,+2,-3,+3]"
+  verbosity_level: 0
+}
+syst_providers: [ResIso_Tool_Config]

@@ -1,0 +1,49 @@
+EMiss_Tool_Config: {
+
+    tool_type: "DIRT2_Emiss"
+    instance_name: "SBNNuSyst_EMiss_multisigma"
+
+    ## AR
+
+    Emiss_CorrTail_Ar_p_central_value: 1
+    Emiss_CorrTail_Ar_p_variation_descriptor: "[0.25, 0.5, 1, 2, 4]"
+
+    Emiss_CorrTail_Ar_n_central_value: 1
+    Emiss_CorrTail_Ar_n_variation_descriptor: "[0.25, 0.5, 1, 2, 4]"
+
+    Emiss_Linear_Ar_p_central_value: 0
+    Emiss_Linear_Ar_p_variation_descriptor: "[-30, -10, 0, 10, 30]"
+
+    Emiss_Linear_Ar_n_central_value: 0
+    Emiss_Linear_Ar_n_variation_descriptor: "[-30, -10, 0, 10, 30]"
+
+    Emiss_ShiftPeak_Ar_p_central_value: 0
+    Emiss_ShiftPeak_Ar_p_variation_descriptor: "[0, 0.5, 1, 1.5, 2]"
+
+    Emiss_ShiftPeak_Ar_n_central_value: 0
+    Emiss_ShiftPeak_Ar_n_variation_descriptor: "[0, 0.5, 1, 1.5, 2]"
+
+    ## C
+
+    Emiss_CorrTail_C_p_central_value: 1
+    Emiss_CorrTail_C_p_variation_descriptor: "[0.25, 0.5, 1, 2, 4]"
+    
+    Emiss_CorrTail_C_n_central_value: 1
+    Emiss_CorrTail_C_n_variation_descriptor: "[0.25, 0.5, 1, 2, 4]"
+    
+    Emiss_Linear_C_p_central_value: 0
+    Emiss_Linear_C_p_variation_descriptor: "[-30, -10, 0, 10, 30]"
+    
+    Emiss_Linear_C_n_central_value: 0
+    Emiss_Linear_C_n_variation_descriptor: "[-30, -10, 0, 10, 30]"
+    
+    Emiss_ShiftPeak_C_p_central_value: 0
+    Emiss_ShiftPeak_C_p_variation_descriptor: "[0, 0.5, 1, 1.5, 2]"
+    
+    Emiss_ShiftPeak_C_n_central_value: 0
+    Emiss_ShiftPeak_C_n_variation_descriptor: "[0, 0.5, 1, 1.5, 2]"
+
+
+  }
+
+syst_providers: [EMiss_Tool_Config]

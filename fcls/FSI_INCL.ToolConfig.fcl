@@ -1,0 +1,66 @@
+FSI_INCL_Tool_Config: {
+
+    tool_type: "FSIReweight"
+    instance_name: "SBNNuSyst_FSI_INCLReweight_multisigma"
+
+    FSIReweight_central_value: 0
+    FSIReweight_variation_descriptor: "[0, 1]"
+
+		FSIReweight_input_manifest: {
+			input_file: "FSI_reweight_template.root"
+			inputs: [
+					{
+						name: "hist_nom_proton"
+						input_hist: "hA2018_proton_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_alt_proton"
+						input_hist: "INCL_proton_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_nom_neutron"
+						input_hist: "hA2018_neutron_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_alt_neutron"
+						input_hist: "INCL_neutron_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_nom_pionp"
+						input_hist: "hA2018_pionp_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_alt_pionp"
+						input_hist: "INCL_pionp_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_nom_pion0"
+						input_hist: "hA2018_pion0_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_alt_pion0"
+						input_hist: "INCL_pion0_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_nom_pionm"
+						input_hist: "hA2018_pionm_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_alt_pionm"
+						input_hist: "INCL_pionm_KEini_vs_Ebias"
+					}
+					
+					,{
+						name: "hist_nom_2p"
+						input_hist: "hA2018_2p_KEini_vs_Ebias"
+					}
+					,{
+						name: "hist_alt_2p"
+						input_hist: "INCL_2p_KEini_vs_Ebias"
+					}
+			]
+		}
+
+  }
+
+syst_providers: [FSI_INCL_Tool_Config]

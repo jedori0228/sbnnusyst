@@ -1,0 +1,21 @@
+#include "AdditionalGENIE.ToolConfig.fcl"
+#include "EmissEngine.ToolConfig.fcl"
+#include "zexpansion_weighter.ToolConfig.fcl"
+#include "CCQERPA.ToolConfig.fcl"
+#include "ResIso.ToolConfig.fcl"
+#include "FSI_hN.ToolConfig.fcl"
+#include "FSI_INCL.ToolConfig.fcl"
+#include "FSI_G4BC.ToolConfig.fcl"
+#include "LQCDZExpFit.ToolConfig.fcl"
+
+syst_providers: [
+AdditionalGENIEReWeight_Tool_Config,
+EMiss_Tool_Config,
+zexpansion_weighter_Tool_Config,
+CCQERPA_Tool_Config,
+ResIso_Tool_Config,
+FSI_hN_Tool_Config,
+FSI_INCL_Tool_Config,
+FSI_G4BC_Tool_Config,
+LQCDZExpFit_Tool_Config
+]
