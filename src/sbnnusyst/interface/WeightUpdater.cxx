@@ -448,12 +448,16 @@ void WeightUpdater::SetOutputPOTHistName(std::string name){
 
   fPOTHistName = name;
 
+  fOutputFile->cd();
+
   fOutputPOT = new TH1D(fPOTHistName.c_str(), fPOTHistName.c_str(), 1, 0, 1);
 
 }
 void WeightUpdater::SetOutputLivetimeHistName(std::string name){
 
   fLivetimeHistName = name;
+
+  fOutputFile->cd();
 
   fOutputLivetime = new TH1D(fLivetimeHistName.c_str(), fLivetimeHistName.c_str(), 1, 0, 1);
 
@@ -498,6 +502,10 @@ void WeightUpdater::Save(){
   fOutputGlobalTree->SetDirectory(fOutputFile);
   fOutputCAFTree->SetDirectory(fOutputFile);
   fOutputGENIETree->SetDirectory(fOutputFile);
+  fOutputPOT->SetDirectory(fOutputFile);
+  fOutputLivetime->SetDirectory(fOutputFile);
+  fOutputPOT->Write();
+  fOutputLivetime->Write();
   fOutputFile->Write();
 
   fOutputFile->Close();
