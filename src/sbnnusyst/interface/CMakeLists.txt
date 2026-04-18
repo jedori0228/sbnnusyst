@@ -31,6 +31,9 @@ target_include_directories(sbnnusyst_interface
   $ENV{SRPROXY_INC}
 )
 
+if (SBNANAOBJ_VERSION_CODE EQUAL 10000502 OR SBNANAOBJ_VERSION_CODE EQUAL 10000501 OR SBNANAOBJ_VERSION_CODE EQUAL 10000503)
+  target_compile_definitions(sbnnusyst_interface PUBLIC SBNANAOBJ_SBND_GEN1_PATCH=1)
+endif()
 
 #install(TARGETS ${TARGETS_TO_BUILD} DESTINATION interface/)
 

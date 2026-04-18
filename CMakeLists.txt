@@ -33,6 +33,24 @@ if(NOT fhiclcpp_FOUND)
   find_package(fhiclcppstandalone)
 endif()
 
+# Determine SBNANAOBJ version
+string(REPLACE "_" ";" VERSION_LIST $ENV{SBNANAOBJ_VERSION})
+list(GET VERSION_LIST 0 MAJOR)
+list(GET VERSION_LIST 1 MINOR)
+list(GET VERSION_LIST 2 PATCH)
+if(LIST_LEN GREATER 3)
+    list(GET VERSION_LIST 3 EXTENSION)
+else()
+    set(EXTENSION "0")
+endif()
+
+list(LENGTH VERSION_LIST VER_LEN)
+math(EXPR VERSION_LAST "${VER_LEN} - 1")
+list(GET VERSION_LIST ${VERSION_LAST}  EXTENSION)
+
+math(EXPR SBNANAOBJ_VERSION_CODE "${MAJOR} * 1000000 + ${MINOR} * 10000 + ${PATCH} * 100 + ${EXTENSION}")
+message(STATUS "SBNANAOBJ_VERSION_CODE: ${SBNANAOBJ_VERSION_CODE}")
+
 ###### Compiler set up
 add_library(sbnnusyst_dependencies INTERFACE)
 target_link_libraries(sbnnusyst_dependencies INTERFACE fhiclcpp::fhiclcpp)
