@@ -13,6 +13,7 @@ add_library(sbnnusyst::interface ALIAS sbnnusyst_interface)
 set_target_properties(sbnnusyst_interface PROPERTIES 
   PUBLIC_HEADER "${IFCE_HDRFILES}"
   EXPORT_NAME interface )
+target_compile_definitions(sbnnusyst_interface PRIVATE $<$<BOOL:${SBNANAOBJ_KMULTISIM_CAP}>:SBNANAOBJ_KMULTISIM_CAP>)
 
 target_link_libraries(sbnnusyst_interface
 PUBLIC
