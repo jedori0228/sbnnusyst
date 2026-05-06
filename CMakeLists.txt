@@ -22,7 +22,7 @@ elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "")
-  set(CMAKE_BUILD_TYPE DebWithRelInfo)
+  set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 
 find_package(nusystematics 2.00.01 REQUIRED)
