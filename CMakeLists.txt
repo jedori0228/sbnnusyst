@@ -5,6 +5,11 @@ find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PA
 
 set(CMAKE_CXX_STANDARD 17)
 
+if(DEFINED ENV{CMAKE_MODULE_PATH})
+  string(REPLACE ":" ";" _module_path "$ENV{CMAKE_MODULE_PATH}")
+  list(APPEND CMAKE_MODULE_PATH ${_module_path})
+endif()
+
 project(sbnnusyst VERSION 1.00.00 LANGUAGES CXX)
 
 #Changes default install path to be a subdirectory of the build dir.
@@ -17,14 +22,24 @@ elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "")
-  set(CMAKE_BUILD_TYPE DebWithRelInfo)
+  set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 
 find_package(nusystematics 2.00.01 REQUIRED)
-find_package(sbnanaobj 09.20.06.03 REQUIRED)
 find_package(GENIE3 REQUIRED)
 if(NOT TARGET GENIE3::All)
   message(FATAL_ERROR "Expected find_package(GENIE3 REQUIRED) call to set up target GENIE3::All.")
+endif()
+
+find_package(sbnanaobj 09.20.06.03 REQUIRED)
+# Detect sbnanaobj version and set flag for kMultisim or kMultiSim
+set(_raw_sbnanaobj_version "$ENV{SBNANAOBJ_VERSION}")
+string(REGEX REPLACE "^v" "" _sbnanaobj_ver_underscores "${_raw_sbnanaobj_version}")
+string(REPLACE "_" "." SBNANAOBJ_VERSION "${_sbnanaobj_ver_underscores}")
+if(SBNANAOBJ_VERSION VERSION_LESS "10.00.05.01" OR SBNANAOBJ_VERSION VERSION_GREATER_EQUAL "10.00.06")
+  set(SBNANAOBJ_KMULTISIM_CAP ON)
+else()
+  set(SBNANAOBJ_KMULTISIM_CAP OFF)
 endif()
 
 ## Check if we have fhiclcpp from ups
