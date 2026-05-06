@@ -32,11 +32,11 @@ if(NOT TARGET GENIE3::All)
 endif()
 
 find_package(sbnanaobj 09.20.06.03 REQUIRED)
-# Detect sbnanaobj version and set flag for kMultiSim (<= 10.05.00) or kMultisim
+# Detect sbnanaobj version and set flag for kMultisim or kMultiSim
 set(_raw_sbnanaobj_version "$ENV{SBNANAOBJ_VERSION}")
 string(REGEX REPLACE "^v" "" _sbnanaobj_ver_underscores "${_raw_sbnanaobj_version}")
 string(REPLACE "_" "." SBNANAOBJ_VERSION "${_sbnanaobj_ver_underscores}")
-if(SBNANAOBJ_VERSION VERSION_LESS "10.00.05.01")
+if(SBNANAOBJ_VERSION VERSION_LESS "10.00.05.01" OR SBNANAOBJ_VERSION VERSION_GREATER_EQUAL "10.00.06")
   set(SBNANAOBJ_KMULTISIM_CAP ON)
 else()
   set(SBNANAOBJ_KMULTISIM_CAP OFF)
