@@ -115,6 +115,9 @@ int main(int argc, char const *argv[]) {
     return 1;
   }
 
+  // Detach ownership of histograms
+  TH1::AddDirectory(kFALSE);
+
   std::ifstream inputFile(cliopts::input_filename);
   if(!inputFile.is_open()){
     printf("[ERROR] %s does not exist\n", cliopts::input_filename);
