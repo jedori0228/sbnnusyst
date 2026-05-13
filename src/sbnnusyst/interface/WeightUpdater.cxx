@@ -292,6 +292,8 @@ void WeightUpdater::ProcessFile(std::string inputfile){
   printf("[WeightUpdater::ProcessFile] -----------------\n");
   printf("[WeightUpdater::ProcessFile] File done\n");
 
+  f_input->Close();
+
 }
 
 void WeightUpdater::SetOutputFileName(std::string FileName){
