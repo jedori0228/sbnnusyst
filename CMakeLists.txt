@@ -10,7 +10,7 @@ if(DEFINED ENV{CMAKE_MODULE_PATH})
   list(APPEND CMAKE_MODULE_PATH ${_module_path})
 endif()
 
-project(sbnnusyst VERSION 1.00.00 LANGUAGES CXX)
+project(sbnnusyst VERSION 1.00.01 LANGUAGES CXX)
 
 #Changes default install path to be a subdirectory of the build dir.
 #Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
@@ -67,6 +67,6 @@ install(EXPORT sbnnusyst-targets
         NAMESPACE sbnnusyst::
         DESTINATION lib/cmake/sbnnusyst)
 
-configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/setup.sbnnusyst.sh.in 
-  ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh @ONLY)
-install(PROGRAMS ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh DESTINATION bin)
+#configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/setup.sbnnusyst.sh.in 
+#  ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh @ONLY)
+#install(PROGRAMS ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh DESTINATION bin)
