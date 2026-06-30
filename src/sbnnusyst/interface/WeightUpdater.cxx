@@ -57,21 +57,14 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
   TFile *f_input = TFile::Open(inputfile.c_str());
 
-  // Check POT and Livetime first;
-  TH1D *hInputPOT = (TH1D *)f_input->Get(fPOTHistName.c_str());
-  if( !AddPOTHist(hInputPOT) ){
-    printf("[WeightUpdater::ProcessFile] Input file does not have POT histogram, skipping:\n");
-    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
-  }
-  TH1D *hInputLivetime = (TH1D *)f_input->Get(fLivetimeHistName.c_str());
-  if( !AddLivetimeHist(hInputLivetime) ){
-    printf("[WeightUpdater::ProcessFile] Input file does not have Livetime histogram, skipping:\n");
-    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
-  }
-
-  // CAF tree
-
+  // Check CAF tree
   TTree *fInputCAFTree = (TTree *)f_input->Get(fCAFTreeName.c_str());
+  if( !fInputCAFTree ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have CAF tree, skipping:\n");
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
+  }
+  
   size_t ThisNCAFEvents = fInputCAFTree->GetEntries();
 
   if(DoDebug){
@@ -82,6 +75,12 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
   // Access StandardRecord if nested
   caf::StandardRecord* fSR = nullptr;
+  // check for branch
+  if( !( fInputCAFTree->GetBranch(fSRName.c_str()) ) ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have branch '%s' in CAF tree, skipping:\n", fSRName.c_str());
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
+  }
 
   if(caftype==caf::kNested){
     fInputCAFTree->SetBranchAddress(fSRName.c_str(), &fSR);
@@ -98,12 +97,38 @@ void WeightUpdater::ProcessFile(std::string inputfile){
     }
 
     printf("[ERROR] Flatcaf is not supported yet\n");
-    abort();
+    return;
 
   }
   else{
     printf("[ERROR] Unknown caf type from\nFile: %s\nTree: %s\n", inputfile.c_str(), fCAFTreeName.c_str());
-    abort();
+    return;
+  }
+
+  // Check GENIE tree
+  TTree *fInputGENIETree = (TTree *)f_input->Get(fGENIETreeName.c_str());
+  if( !fInputGENIETree ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have GENIE tree, skipping:\n");
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
+  }
+  genie::NtpMCEventRecord *fInputGENIENtp = nullptr;
+  fInputGENIETree->SetBranchAddress(fGENIERecName.c_str(), &fInputGENIENtp);
+  size_t ThisNGENIEEvents = fInputGENIETree->GetEntries();
+
+  // Check POT and Livetime after checking branches
+  // This ensures POT is added only for files that will be processed
+  TH1D *hInputPOT = (TH1D *)f_input->Get(fPOTHistName.c_str());
+  if( !AddPOTHist(hInputPOT) ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have POT histogram, skipping:\n");
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
+  }
+  TH1D *hInputLivetime = (TH1D *)f_input->Get(fLivetimeHistName.c_str());
+  if( !AddLivetimeHist(hInputLivetime) ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have Livetime histogram, skipping:\n");
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
   }
 
   // - Check Global
@@ -120,12 +145,6 @@ void WeightUpdater::ProcessFile(std::string inputfile){
     CreateGlobalTree(srglobal);
 
   }
-
-  // - GENIE tree
-  TTree *fInputGENIETree = (TTree *)f_input->Get(fGENIETreeName.c_str());
-  genie::NtpMCEventRecord *fInputGENIENtp = nullptr;
-  fInputGENIETree->SetBranchAddress(fGENIERecName.c_str(), &fInputGENIENtp);
-  size_t ThisNGENIEEvents = fInputGENIETree->GetEntries();
 
   // - SRProxy to access record
   caf::SRSpillProxy* srproxy = new caf::SRSpillProxy(fInputCAFTree, fSRName.c_str());
@@ -492,6 +511,8 @@ bool WeightUpdater::AddLivetimeHist(TH1D *h_input){
   if(!fOutputLivetime){
     return true;
   }
+
+  std::cout << "[WeightUpdater::AddLivetimeHist] Livetime = " << h_input->GetBinContent(1) << std::endl;
   
   fOutputLivetime->Add(h_input);
   return true;
