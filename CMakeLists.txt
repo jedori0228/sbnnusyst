@@ -67,6 +67,6 @@ install(EXPORT sbnnusyst-targets
         NAMESPACE sbnnusyst::
         DESTINATION lib/cmake/sbnnusyst)
 
-#configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/setup.sbnnusyst.sh.in 
-#  ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh @ONLY)
-#install(PROGRAMS ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh DESTINATION bin)
+configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/setup.sbnnusyst.sh.in 
+  ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh @ONLY)
+install(PROGRAMS ${PROJECT_BINARY_DIR}/setup.sbnnusyst.sh DESTINATION bin)
