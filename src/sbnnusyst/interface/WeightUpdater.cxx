@@ -57,21 +57,7 @@ void WeightUpdater::ProcessFile(std::string inputfile){
 
   TFile *f_input = TFile::Open(inputfile.c_str());
 
-  // Check POT and Livetime first;
-  TH1D *hInputPOT = (TH1D *)f_input->Get(fPOTHistName.c_str());
-  if( !AddPOTHist(hInputPOT) ){
-    printf("[WeightUpdater::ProcessFile] Input file does not have POT histogram, skipping:\n");
-    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
-    return;
-  }
-  TH1D *hInputLivetime = (TH1D *)f_input->Get(fLivetimeHistName.c_str());
-  if( !AddLivetimeHist(hInputLivetime) ){
-    printf("[WeightUpdater::ProcessFile] Input file does not have Livetime histogram, skipping:\n");
-    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
-    return;
-  }
-
-  // CAF tree
+  // Check CAF tree
   TTree *fInputCAFTree = (TTree *)f_input->Get(fCAFTreeName.c_str());
   if( !fInputCAFTree ){
     printf("[WeightUpdater::ProcessFile] Input file does not have CAF tree, skipping:\n");
@@ -119,7 +105,7 @@ void WeightUpdater::ProcessFile(std::string inputfile){
     return;
   }
 
-    // - GENIE tree
+  // Check GENIE tree
   TTree *fInputGENIETree = (TTree *)f_input->Get(fGENIETreeName.c_str());
   if( !fInputGENIETree ){
     printf("[WeightUpdater::ProcessFile] Input file does not have GENIE tree, skipping:\n");
@@ -129,6 +115,21 @@ void WeightUpdater::ProcessFile(std::string inputfile){
   genie::NtpMCEventRecord *fInputGENIENtp = nullptr;
   fInputGENIETree->SetBranchAddress(fGENIERecName.c_str(), &fInputGENIENtp);
   size_t ThisNGENIEEvents = fInputGENIETree->GetEntries();
+
+  // Check POT and Livetime after checking branches
+  // This ensures POT is added only for files that will be processed
+  TH1D *hInputPOT = (TH1D *)f_input->Get(fPOTHistName.c_str());
+  if( !AddPOTHist(hInputPOT) ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have POT histogram, skipping:\n");
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
+  }
+  TH1D *hInputLivetime = (TH1D *)f_input->Get(fLivetimeHistName.c_str());
+  if( !AddLivetimeHist(hInputLivetime) ){
+    printf("[WeightUpdater::ProcessFile] Input file does not have Livetime histogram, skipping:\n");
+    printf("[WeightUpdater::ProcessFile] - %s\n", inputfile.c_str());
+    return;
+  }
 
   // - Check Global
   if(!fOutputGlobalTree){
@@ -510,6 +511,8 @@ bool WeightUpdater::AddLivetimeHist(TH1D *h_input){
   if(!fOutputLivetime){
     return true;
   }
+
+  std::cout << "[WeightUpdater::AddLivetimeHist] Livetime = " << h_input->GetBinContent(1) << std::endl;
   
   fOutputLivetime->Add(h_input);
   return true;
